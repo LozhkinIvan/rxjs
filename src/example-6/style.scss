@@ -1,0 +1,48 @@
+@keyframes opacity-show {
+	from {opacity: 0;}
+	to {opacity: 1;}
+}
+
+@keyframes opacity-hide {
+	from {opacity: 1;}
+	to {opacity: 0;}
+}
+
+.outlet {
+	display: flex;
+	flex-direction: column-reverse;
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+
+	.alert {
+		font-size: 20px;
+		text-transform: uppercase;
+		width: 200px;
+		height: 50px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(red, 0.5);
+		border: 2px solid red;
+		position: relative;
+		border-radius: 5px;
+		margin-top: 10px;
+		animation-name: opacity-show;
+    animation-duration: 1s;
+		
+		&.hide {
+			animation-name: opacity-hide;
+			animation-duration: 1.2s;
+		}
+
+		.close {
+			position: absolute;
+			right: 5px;
+			top: 5px;
+			background: none;
+			border: none;
+			cursor: pointer;
+		}
+	}
+}
