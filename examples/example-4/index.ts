@@ -1,13 +1,14 @@
 import { fromEvent } from "rxjs";
 import { ajax } from "rxjs/ajax";
-import { flatMap } from "rxjs/operators";
+import { tap, mergeMap, switchMap, concatMap, debounceTime, throttleTime } from "rxjs/operators";
 
 const output = document.querySelector("output");
 const button = document.querySelector("button");
 
 fromEvent(button, "click")
 	.pipe(
-		flatMap(getAlbums)
+		concatMap(getAlbums),		
+		tap(result => console.log(result))
 	)
 	.subscribe(render, err => console.error(err));
 

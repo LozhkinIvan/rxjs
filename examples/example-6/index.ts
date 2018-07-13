@@ -1,43 +1,44 @@
-import { concatMap, delay, tap, scan, map, switchMap, mergeMap } from 'rxjs/operators';
-import { of, fromEvent, Observable, Subject } from 'rxjs';
+import { delay, tap, scan, map, mergeMap, first } from 'rxjs/operators';
+import { of, fromEvent, Observable } from 'rxjs';
 import './style.scss';
 
 const update = document.getElementById('update');
 const outlet = document.getElementById('outlet');
 
-const source$ = fromEvent(update, "click")
+const source$: Observable<string> = fromEvent(update, "click").pipe(
+	scan(acc => acc + 1, 0),
+	map(count => `Message ${count}`)
+)
 
 source$.pipe(
-	scan(acc => acc + 1, 0),
-	map(count => `Message ${count}`),
-	//concatMap(message => showAlert(message))
-	mergeMap(message => showAlert(message), 5)
+	mergeMap(message => createAlert(message), 5)
 )
-.subscribe();
+	.subscribe();
 
-function showAlert(message: string): Observable<HTMLElement> {
+function createAlert(message: string): Observable<HTMLElement> {
 	return of(message).pipe(
 		map(message => renderAlert(message)),
-		delay(1000),
-		mergeMap(alert => hideAlert(alert)),
+		delay(4000),
+		mergeMap(alert => createCloseButton(alert)),
 		tap(markRemovedAlert),
 		delay(1000),
 		tap(removeAlert)
 	)
 }
 
-function hideAlert(alert: HTMLElement): Observable<HTMLElement> {
-	const close$ = new Subject<HTMLElement>();
+function createCloseButton(alert: HTMLElement): Observable<HTMLElement> {
 	const close = renderClose(alert);
-	close.addEventListener('click', () => {
-		close$.next(alert);
-		close$.complete();
-	});
+	const close$ = fromEvent(close, 'click')
+		.pipe(
+			first(),
+			map(() => alert)
+		);
+
 	return close$;
 }
 
 /**
- * Html functions 
+ * Html render functions 
  * */
 function renderAlert(message: string): HTMLElement {
 	const alert = document.createElement('div');

@@ -12,5 +12,6 @@ click$
 		filter(events => events.length >= 3)
 	)
 	.subscribe((res) => {
+		console.log(res);
 		output.textContent = Math.random().toString(36).slice(2);
 	});

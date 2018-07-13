@@ -20,11 +20,12 @@ const resource$ = fromEvent(select, "change")
 		map((e: InputEvent) => e.target.value)
 	);
 
-combineLatest(id$, resource$)
+const data$ = combineLatest(id$, resource$)
 	.pipe(
 		switchMap(getResources)
-	)
-	.subscribe(render);
+	);
+
+data$.subscribe(render);
 
 function getResources([id, resource]: [string, string]) {
 	return ajax(
